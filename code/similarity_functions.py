@@ -72,6 +72,7 @@ def people_involved(movie, our_movie):
     movie = str(movie).strip().split()
     our_movie = str(our_movie).strip().split()
 
+    # people's ID begin with "nm"
     movie = [item for item in movie if "nm" in item]
     our_movie = [item for item in our_movie if "nm" in item]
     temp = set(our_movie).intersection(movie)
@@ -240,11 +241,14 @@ def runtime(movie, our_movie):
 #
 # parameter series is the row upon which function is called
 #
-# returns Euclidean distance from our movie which is defined as the origin at 0
-#
+# Returns Euclidean distance from our movie which is defined as the origin at 0
+# 
 #
 """
 
+
+# TODO Check other options for computing
+# TODO Add averageRating and numVotes into consideration when calculating
 
 def total_similarity(series):
     vector = np.array([series.genres,
@@ -259,12 +263,7 @@ def total_similarity(series):
     # for debugg
     # print(zeroes)
     # print(vector)
-    result = LA.norm(zeros - vector)
-    if isnan(result):
-        print(series.primaryTitle)
-        print(vector)
-        print("-------------------")
-    return result
+    return LA.norm(zeros - vector)
 
 
 # movies.apply(func=similar.total_similarity,axis=1, args={})

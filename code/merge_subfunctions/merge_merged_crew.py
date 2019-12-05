@@ -1,5 +1,16 @@
 import pandas as pd
 
+"""
+#
+# main_mmc()
+#
+#
+# Merges title.basics.tsv with title.ratings.tsv by tconst which serves as an ID
+#
+#
+"""
+
+
 # TODO Solve HORRIBLE inefficiency when using merge function
 
 def main_mmc():

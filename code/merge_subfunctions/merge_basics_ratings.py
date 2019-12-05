@@ -3,12 +3,25 @@ import pandas as pd
 # verzija baze je ~20.10.2019
 # ovdje cu spojiti datoteke
 # filtriram van : bilo kakav ne-film
-# uzimam filmove sa 50 ili vise ratinga radi preciznosti
+# uzimam filmove sa 200 ili vise ratinga radi preciznosti
 
+
+"""
+#
+# main_mbr()
+#
+# Filters out anything that is not a film out of title.basics.tsv
+  Filters out movies who have less than MIN_VOTE_NUM votes as they may
+  not have sufficient data.
+  Merges title.basics.tsv with title.ratings.tsv by tconst which serves as an ID
+  
+#
+"""
+
+# TODO Solve HORRIBLE inefficiency when using merge function
 
 MIN_VOTE_NUM = 200
 
-# TODO Solve HORRIBLE inefficiency when using merge function
 
 def main_mbr():
     global MIN_VOTE_NUM
@@ -49,5 +62,3 @@ def main_mbr():
     print(new.shape)
     print(new.dtypes)
     print("MBR DONE\n")
-
-
