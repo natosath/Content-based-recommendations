@@ -1,0 +1,11 @@
+Version 0.9
+    For given input put out 10 most similar movies
+Version 0.91
+    Add actor support to v0.9
+Version 1
+    Make everything work and stable
+Version 1.1
+    For match person IDs to names
+Version 1.2
+    Add constants which represent user interest for particular category for each column
+    Use those constants as weights when calculating similarity from user perspective

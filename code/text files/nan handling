@@ -1,0 +1,3 @@
+staviti da je svaki NaN = 0?
+mislim da je bolje rjesenje samo ignorirati NaN vrijednost i racunati kao da ne postoji
+to bi dalo bolju sliku o tome sto se dogada

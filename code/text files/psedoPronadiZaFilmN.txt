@@ -1,0 +1,13 @@
+#ovo je generalna ideja kako ce funkcionirati trazenje najslicnijih filmova
+#za zada film F
+
+primiUnos()
+nadiOdgovarajuci film()
+ucitaj podatke filma u strukturu
+napravi soft pass, pogledaj koji bi filmovi mogli biti slicni
+medu soft passed filmova racunaj slicnost i unosi u listu
+    prvi svakom novom racunu provjeri jel ima vecu slicnost od najslabije koja je vec u listi
+        zamjeni ako da
+filmove unutar liste sortiraj od najvece vrijednosti ka najmanjoj
+ispisi u nekom smislenom obliku
+
