@@ -1,11 +1,12 @@
 import pandas as pd
+
 from code import similarity_functions as similar
 
 # TODO Optimize all of this one day
 
 # TODO Input from keyboard or some other source
 
-INPUT = "Inception"
+INPUT = "Interstellar"
 #INPUT = str(input("Unesi film"))
 
 print("Our movie is : " + INPUT)

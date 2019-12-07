@@ -1,0 +1,5 @@
+filterBasics()
+
+mergeByPath(smaller, bigger, destination)
+
+loop em'
