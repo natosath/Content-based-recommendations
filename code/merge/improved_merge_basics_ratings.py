@@ -18,18 +18,17 @@ import pandas as pd
 #
 """
 
-MIN_VOTE_NUM = 200
 
+def merge_basics_ratings(basics, ratings, destination):
+    MIN_VOTE_NUM = 200
+    print("Merging basics and ratings...")
 
-def main_mbr():
-    global MIN_VOTE_NUM
-
-    basics_reader = pd.read_csv("title.basics.tsv",
+    basics_reader = pd.read_csv(str(basics),
                                 sep="\t",
                                 chunksize=150000,
                                 na_values="\\N",
                                 low_memory=False)
-    ratings = pd.read_csv("title.ratings.tsv",
+    ratings = pd.read_csv(str(ratings),
                           sep="\t",
                           na_values="\\N")
     is_first = True
@@ -45,12 +44,13 @@ def main_mbr():
         merged = merged.sort_values(["tconst"])
 
         if is_first and (not merged.empty):
-            merged.to_csv('merged.csv', index=False)
+            merged.to_csv(str(destination), index=False)
             is_first = False
         elif not merged.empty:
-            merged.to_csv('merged.csv', index=False, header=False, mode="a")
+            merged.to_csv(str(destination), index=False, header=False, mode="a")
         # print(merged)
-    new = pd.read_csv('merged.csv')
+    new = pd.read_csv(str(destination))
     print(new.shape)
     print(new.dtypes)
-    print("MBR DONE\n")
+    print("MERGED BASICS AND RATINGS!")
+    print("----------------------------------\n")

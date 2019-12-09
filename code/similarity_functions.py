@@ -13,6 +13,7 @@
 
 import pandas as pd
 from math import isnan
+from math import log10
 import numpy as np
 import numpy.linalg as LA
 
@@ -219,7 +220,7 @@ def runtime(movie, our_movie):
     # print("Movie : " + str(movie))
     # print("Series " + str(our_movie))
 
-    # NaN handling
+    # NaN handling to avoid calculation of something that will result in NaN
     if isnan(movie):
         return movie
 
@@ -233,6 +234,54 @@ def runtime(movie, our_movie):
 
     # a if condition else b , ternary operator in python
     return 1 - (our_movie / movie) if (our_movie < movie) else 1 - (movie / our_movie)
+
+
+"""
+#
+#
+#
+"""
+
+
+def rating(movie, our_movie):
+    # print("ULAZIM u rating")
+    # print(movie)
+    # print("Series " + str(our_movie))
+    # print("---------------\n")
+
+    movie = float(movie)
+    our_movie = str(our_movie).strip().split()
+    our_movie = float(our_movie[1])
+
+    # print("Movie : " + str(movie))
+    # print("Series " + str(our_movie))
+    # print("+++++++++++++++\n")
+
+    return our_movie / movie
+
+
+"""
+#
+#
+#
+"""
+
+
+def popularity(movie, our_movie):
+    print("ULAZIM u popularity")
+    print(movie)
+    print("Series " + str(our_movie))
+    print("---------------\n")
+
+    movie = float(movie)
+    our_movie = str(our_movie).strip().split()
+    our_movie = float(our_movie[1])
+
+    print("Movie : " + str(movie))
+    print("Series " + str(our_movie))
+    print("+++++++++++++++\n")
+
+    return log10(our_movie) / log10(movie)
 
 
 """
@@ -257,6 +306,9 @@ def total_similarity(series):
                        series.writers,
                        series.startYear])
 
+    #vector = vector * series.averageRating
+    #vector = vector * series.numVotes
+
     vector = vector[~np.isnan(vector)]
     zeros = np.zeros([len(vector)])
 
@@ -266,7 +318,7 @@ def total_similarity(series):
     return LA.norm(zeros - vector)
 
 
-# movies.apply(func=similar.total_similarity,axis=1, args={})
+# movies.apply(func=similar.print_series,axis=1, args={})
 def print_series(series):
     print(series)
     return

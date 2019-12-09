@@ -8,6 +8,6 @@ from code.merge import improved_merge_basics_ratings as mbr
 from code.merge import improved_merge_merged_crew as mmc
 
 # fb.filter_basics()
-mbr.main_mbr()
-mmc.main_mmc()
-af.main_adjust()
+mbr.merge_basics_ratings('title.basics.tsv', 'title.ratings.tsv', 'merged.csv')
+mmc.merge_bnr_crew('title.crew.tsv', 'merged.csv', 'final.csv')
+af.adjust_final('final.csv')

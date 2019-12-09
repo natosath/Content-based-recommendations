@@ -8,28 +8,23 @@ import pandas as pd
 
 """
 #
-# main_mbr()
 #
-# Filters out anything that is not a film out of title.basics.tsv
-  Filters out movies who have less than MIN_VOTE_NUM votes as they may
-  not have sufficient data.
-  Merges title.basics.tsv with title.ratings.tsv by tconst which serves as an ID
-
+#
 #
 """
 
-MIN_VOTE_NUM = 200
 
 
-def main_mmc():
-    global MIN_VOTE_NUM
+def merge_bnr_crew(crew, bnr, destination):
+    MIN_VOTE_NUM = 200
+    print("Merging with crew...")
 
-    crew_reader = pd.read_csv("title.crew.tsv",
+    crew_reader = pd.read_csv(str(crew),
                               sep="\t",
                               chunksize=150000,
                               na_values="\\N",
                               low_memory=False)
-    test = pd.read_csv('merged.csv')
+    test = pd.read_csv(str(bnr))
     is_first = True
 
     for crew in crew_reader:
@@ -39,14 +34,15 @@ def main_mmc():
                           (final["writers"].notnull())]
         final = final.sort_values(["tconst"])
         if is_first and (not final.empty):
-            final.to_csv('final.csv', index=False)
+            final.to_csv(str(destination), index=False)
             is_first = False
         elif not final.empty:
-            final.to_csv('final.csv', index=False, header=False, mode="a")
+            final.to_csv(str(destination), index=False, header=False, mode="a")
         """if not final.empty:
             print(final)"""
 
-    new = pd.read_csv("final.csv")
+    new = pd.read_csv(str(destination))
     print(new.shape)
     print(new.dtypes)
-    print("MMC DONE\n")
+    print("MERGED BASICS&RATINGS WITH CREW!")
+    print("++++++++++++++++++++++++++++++++++\n")
