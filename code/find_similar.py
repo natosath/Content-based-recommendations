@@ -1,4 +1,6 @@
 import pandas as pd
+import time
+start_time = time.time()
 
 from code import similarity_functions as similar
 
@@ -110,5 +112,8 @@ all_movies = pd.read_csv("final.csv")
 merged = pd.merge(movies, all_movies, how="inner", on="tconst")
 del movies
 del all_movies
-merged.apply(func=similar.print_series, axis=1, args={})
+# merged.apply(func=similar.print_series, axis=1, args={})
 print(merged[["primaryTitle", "similarity", "averageRating"]])
+
+
+print("--- %s seconds ---" % (time.time() - start_time))
