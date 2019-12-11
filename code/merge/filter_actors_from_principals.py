@@ -26,4 +26,4 @@ def filter_actors(source, destination):
 
     print("FILTER DONE")
 
-# filter_actors("../title.principals.tsv", '../actors.csv')
+# filter_actors("../title.principals.tsv", '../raw.actors.csv')
