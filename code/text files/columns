@@ -31,6 +31,7 @@ principals:
     category (string) - the category of job that person was in
     job (string) - the specific job title if applicable, else '\N'
     characters (string) - the name of the character played if applicable, else '\N'
+    Index(['tconst', 'ordering', 'nconst', 'category', 'job', 'characters'], dtype='object')
 
 
 final:
