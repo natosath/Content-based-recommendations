@@ -1,5 +1,6 @@
 import pandas as pd
 import time
+
 start_time = time.time()
 
 from code import similarity_functions as similar
@@ -8,14 +9,15 @@ from code import similarity_functions as similar
 
 # TODO Input from keyboard or some other source
 
-INPUT = "Interstellar"
+INPUT = "The Prestige"
 MOST_SIMILAR = 12
 # INPUT = str(input("Unesi film"))
 
 print("Our movie is : " + INPUT)
 
 # search our selected movie in dataframe
-movies = pd.read_csv("final.csv")
+# movies = pd.read_csv("final.csv")
+movies = pd.read_csv("database.csv")
 input_movie = movies.loc[movies["primaryTitle"] == INPUT]
 movies = movies.loc[movies["primaryTitle"] != INPUT]  # remove our selected movie from dataframe
 # movies = movies.drop(labels="originalTitle", axis=1)   # remove to reduce clutter, however it is needed for final out put
@@ -42,13 +44,13 @@ print("directors")
 movies["directors"] = movies.directors.apply(func=similar.people_involved, args={str(input_movie.directors)})
 print(movies[["primaryTitle", "directors"]])
 
-# izracunaj slicnost pisaca
+# ----------izracunaj slicnost pisaca------------------
 print("writers")
 
 movies["writers"] = movies.writers.apply(func=similar.people_involved, args={str(input_movie.writers)})
 print(movies[["primaryTitle", "writers"]])
 
-# izracunaj slicnost genre
+# ------------izracunaj slicnost genre----------
 print("genres")
 # TODO changed here
 movies["genres"] = movies.genres.apply(func=similar.genres, args={str(input_movie.genres)})
@@ -80,6 +82,15 @@ print(input_movie.startYear)
 movies["runtimeMinutes"] = movies.runtimeMinutes.apply(func=similar.runtime, args={str(input_movie.runtimeMinutes)})
 print(movies[["primaryTitle", "startYear"]])
 
+# ----------izracunaj slicnost glumaca-------------
+print("actors")
+
+# u stupac "directors" dataframea movies transformiramo funkcijom calcDirectros, prvi argument pandas interno salje
+# drugi argument funkcije calcDirectros salje sa args={}
+# ovo ne dirati, radi kako spada
+movies["actors"] = movies.actors.apply(func=similar.people_involved, args={str(input_movie.actors)})
+print(movies[["primaryTitle", "actors"]])
+
 # # izracunaj slicnost rating
 # print("rating")
 #
@@ -106,7 +117,6 @@ movies = movies[["tconst", "similarity"]]
 # uzimanje najslicnijih
 movies = movies.head(MOST_SIMILAR)
 
-
 all_movies = pd.read_csv("final.csv")
 # spajanje najslicnijih i svih filmova
 merged = pd.merge(movies, all_movies, how="inner", on="tconst")
@@ -114,6 +124,5 @@ del movies
 del all_movies
 # merged.apply(func=similar.print_series, axis=1, args={})
 print(merged[["primaryTitle", "similarity", "averageRating"]])
-
 
 print("--- %s seconds ---" % (time.time() - start_time))

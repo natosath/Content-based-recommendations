@@ -304,10 +304,11 @@ def total_similarity(series):
                        series.runtimeMinutes,
                        series.directors,
                        series.writers,
-                       series.startYear])
+                       series.startYear,
+                       series.actors])
 
-    #vector = vector * series.averageRating
-    #vector = vector * series.numVotes
+    # vector = vector * series.averageRating
+    # vector = vector * series.numVotes
 
     vector = vector[~np.isnan(vector)]
     zeros = np.zeros([len(vector)])

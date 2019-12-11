@@ -6,9 +6,11 @@ def fix_actors(actors):
     # remove empty strings
     actors = list(filter(None, actors))
     # gives back "nm" prefix to actors
+    result = ""
     for i in range(len(actors)):
         actors[i] = "nm" + actors[i]
-    return actors
+        result = result + actors[i] + ","
+    return result[0:-1]
 
 
 def adjust_sorted_actors(source, destination):
@@ -32,4 +34,4 @@ def adjust_sorted_actors(source, destination):
             actor.to_csv(str(destination), index=False, header=False, mode="a")
 
 
-# adjust_sorted_actors('../sorted.actors.csv', '../actors.csv')
+adjust_sorted_actors('../sorted.actors.csv', '../actors.csv')
