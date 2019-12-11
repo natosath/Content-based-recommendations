@@ -40,4 +40,4 @@ def sort_actors(source, destination):
         elif not actors_by_film.empty:
             actors_by_film.to_csv(str(destination), header=False, mode="a")
 
-# sort_actors('../actors.csv', '../sorted.actors.csv')
+# sort_actors('../raw.actors.csv', '../sorted.raw.actors.csv')
