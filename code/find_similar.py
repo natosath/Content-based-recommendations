@@ -1,15 +1,14 @@
 import pandas as pd
 import time
+from code import similarity_functions as similar
 
 start_time = time.time()
-
-from code import similarity_functions as similar
 
 # TODO Optimize all of this one day
 
 # TODO Input from keyboard or some other source
 
-INPUT = "The Prestige"
+INPUT = "The Godfather"
 MOST_SIMILAR = 12
 # INPUT = str(input("Unesi film"))
 

@@ -24,4 +24,4 @@ def merge_final_with_actors(final, actors, destination):
             joined.to_csv(str(destination), index=False, header=False, mode="a")
 
 
-merge_final_with_actors('../final.csv', '../actors.csv', '../database.csv')
+# merge_final_with_actors('../final.csv', '../actors.csv', '../database.csv')

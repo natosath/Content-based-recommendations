@@ -1,0 +1,12 @@
+težine na bazi postojećih sličnosti, zato da se diferenciraju filmovi sa kombinacijama sličnih elemenata.
+recimo da film koji ima i isti genre i istog pisca dobije "boost" prema slicnosti.
+
+gledanje interakcija elemenata
+
+gurati naprijed filmove sa iznadprosjecnom performansom komponenti?
+
+za iznadprosjecne filmove uzeti jos podataka koji su mozda obskurniji? cinematographer npr?
+
+micanje filmova koji su slicni samo po jednoj komponenti?
+
+opcenito koeficijenti na svakoj komponenti sličnosti jer nisu sve jednako važne
