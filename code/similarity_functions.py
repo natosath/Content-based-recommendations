@@ -165,7 +165,7 @@ def start_year(movie, our_movie):
 
     # NaN handling
     if isnan(movie):
-        return 0
+        return 1
 
     BEGINNING_OF_MOVIE_TIME = 1877
     movie = int(movie) - BEGINNING_OF_MOVIE_TIME
@@ -175,7 +175,7 @@ def start_year(movie, our_movie):
 
     # NaN handling
     if isnan(our_movie):
-        return 0
+        return 1
 
     # a if condition else b , ternary operator in python
     return 1 - (our_movie / movie) if (our_movie < movie) else 1 - (movie / our_movie)
@@ -194,10 +194,27 @@ def start_year(movie, our_movie):
 """
 
 
-# TODO See if this will be actually used
-
+# TODO Optimize this
+# Primary criteria for now:
+# genre, director, startYear
+# kada pretvoris ID-jeve osoba u intove, pokusaj opet sve racunati i onda prije
+# zavrsne udaljenosti isfiltriraj
 def remove_least_similar(movies, series):
+    print(movies.shape)
+    # movies = movies.sort_values(by=["directors"], ascending=True)
+    # print(movies.directors)
+    movies = movies.loc[((movies["genres"] != 1) | (movies["directors"] != 1) | (movies["writers"] != 1))
+                        & (movies["startYear"] < 0.5)]
+    print(movies.shape)
+    # movies = movies.loc[movies["directors"] != 1]
     return movies
+
+
+# def is_adult_value(movie, our_movie):
+#     isAdult = int(our_movie["isAdult"])
+#     movie = movie.loc[movie["isAdult"] == isAdult]
+#     movie = movie.drop("isAdult", axis=1)  # ne treba vise za izracun
+#     return movie
 
 
 """
