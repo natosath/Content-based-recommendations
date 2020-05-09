@@ -76,6 +76,7 @@ def people_involved(movie, our_movie):
     # people's ID begin with "nm"
     movie = [item for item in movie if "nm" in item]
     our_movie = [item for item in our_movie if "nm" in item]
+    our_movie = [item for item in our_movie if "nm" in item]
     temp = set(our_movie).intersection(movie)
 
     # odkomentirati za debug
@@ -200,12 +201,12 @@ def start_year(movie, our_movie):
 # kada pretvoris ID-jeve osoba u intove, pokusaj opet sve racunati i onda prije
 # zavrsne udaljenosti isfiltriraj
 def remove_least_similar(movies, series):
-    print(movies.shape)
+    # print(movies.shape)
     # movies = movies.sort_values(by=["directors"], ascending=True)
     # print(movies.directors)
     movies = movies.loc[((movies["genres"] != 1) | (movies["directors"] != 1) | (movies["writers"] != 1))
                         & (movies["startYear"] < 0.5)]
-    print(movies.shape)
+    # print(movies.shape)
     # movies = movies.loc[movies["directors"] != 1]
     return movies
 
@@ -334,7 +335,6 @@ def total_similarity(series):
     # print(zeroes)
     # print(vector)
     return LA.norm(zeros - vector)
-
 
 # movies.apply(func=similar.print_series,axis=1, args={})
 def print_series(series):

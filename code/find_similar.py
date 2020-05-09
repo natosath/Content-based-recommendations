@@ -6,8 +6,8 @@ start_time = time.time()
 
 # TODO Optimize all of this one day
 
-INPUT = "Inception"
-MOST_SIMILAR = 12
+INPUT = "The Prestige"
+MOST_SIMILAR = 40
 
 print("Our movie is : " + INPUT)
 
@@ -15,6 +15,8 @@ movies = pd.read_csv("database.csv")
 input_movie = movies.loc[movies["primaryTitle"] == INPUT]
 movies = movies.loc[movies["primaryTitle"] != INPUT]  # remove our selected movie from dataframe
 movies = movies.drop(labels="originalTitle", axis=1)
+# movies = movies.sort_values(by=["numVotes"], ascending=False)
+# movies = movies.head(2000)
 # remove to reduce clutter, however it is needed for final out put
 
 
@@ -46,7 +48,9 @@ writer_end = time.time()
 # ----------------------------------------------------
 # izbaci one za koji do sada imaju najmanju slicnost
 # TODO IMPLEMENT THIS!!!!
+filter_start = time.time()
 movies = similar.remove_least_similar(movies, input_movie)
+filter_end = time.time()
 
 # -------------slicnost trajanja------------------
 runtime_start = time.time()
@@ -66,9 +70,11 @@ math_end = time.time()
 
 # -------------prikazi podatke----------------
 movies = movies.sort_values(by=["similarity"])
+# movies = movies.sort_values(by=["numVotes"], ascending=False)
 movies = movies.head(MOST_SIMILAR)
 movies = movies[["tconst", "similarity", "primaryTitle"]]
 print(movies)
+print(movies.shape)
 
 """all_movies = pd.read_csv("final.csv")
 # spajanje najslicnijih i svih filmova
@@ -83,6 +89,7 @@ print("directors %s" % (director_end - director_start))
 print("writers %s" % (writer_end - writer_start))
 print("genres %s" % (genre_end - genre_start))
 print("year %s" % (year_end - year_start))
+print("--filtering movies %s " % (filter_end - filter_start))
 print("runtime %s" % (runtime_end - runtime_start))
 print("actors %s" % (actors_end - actors_start))
 print("sveukupna slicnost %s" % (total_end - total_start))
