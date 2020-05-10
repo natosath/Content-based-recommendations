@@ -62,31 +62,47 @@ def is_adult_value(movie, our_movie):
 # FIXME 1.)    temp = set(our_movie).intersection(movie)d
 
 
-def people_involved(movie, our_movie):
-    # these comments serve to debug code, uncomment them when needed
-    # print("ULAZIM")
-    # print("Movie : " + str(movie))
-    # print("Tip move " + str(type(movie)))
-    # print("Series " + str(our_movie))
-    # print("Tip series " + str(type(our_movie)))
+# def people_involved(movie, our_movie):
+#     # these comments serve to debug code, uncomment them when needed
+#     # print("ULAZIM")
+#     # print("Movie : " + str(movie))
+#     # print("Tip move " + str(type(movie)))
+#     # print("Series " + str(our_movie))
+#     # print("Tip series " + str(type(our_movie)))
+#
+#     movie = str(movie).strip().split()
+#     our_movie = str(our_movie).strip().split()
+#
+#     # people's ID begin with "nm"
+#     movie = [item for item in movie if "nm" in item]
+#     our_movie = [item for item in our_movie if "nm" in item]
+#     our_movie = [item for item in our_movie if "nm" in item]
+#     temp = set(our_movie).intersection(movie)
+#
+#     # odkomentirati za debug
+#     # print("FILTRIRAO")
+#     # print("Movie : " + str(movie))
+#     # print("Tip move " + str(type(movie)))
+#     # print("Series " + str(our_movie))
+#     # print("Tip series " + str(type(our_movie)))
+#     # print("Temp : " + str(temp))
+#
+#     # error handling
+#     if len(movie) + len(our_movie) - len(temp) == 0:
+#         return 0
+#     # true result
+#     # number of shared elements / number of total elements
+#     return 1 - float(len(temp) / (len(movie) + len(our_movie) - len(temp)))
 
+# faster version, have to check if it is equally as accurate
+def people_involved(movie, our_movie):
     movie = str(movie).strip().split()
     our_movie = str(our_movie).strip().split()
 
     # people's ID begin with "nm"
-    movie = [item for item in movie if "nm" in item]
-    our_movie = [item for item in our_movie if "nm" in item]
-    our_movie = [item for item in our_movie if "nm" in item]
-    temp = set(our_movie).intersection(movie)
-
-    # odkomentirati za debug
-    # print("FILTRIRAO")
-    # print("Movie : " + str(movie))
-    # print("Tip move " + str(type(movie)))
-    # print("Series " + str(our_movie))
-    # print("Tip series " + str(type(our_movie)))
-    # print("Temp : " + str(temp))
-
+    movie = {item for item in movie if "nm" in item}
+    our_movie = {item for item in our_movie if "nm" in item}
+    temp = movie & our_movie
     # error handling
     if len(movie) + len(our_movie) - len(temp) == 0:
         return 0
@@ -119,7 +135,7 @@ def genres(movie, our_movie):
 
     movie = str(movie).strip().split()
     our_movie = str(our_movie).strip().split()
-    temp = set(our_movie).intersection(movie)
+    temp = set(movie).intersection(our_movie)
 
     # print("FILTRIRAO u genres")
     # print("Movie : " + str(movie))
@@ -134,6 +150,32 @@ def genres(movie, our_movie):
     # true result
     # number of shared elements / number of total elements
     return 1 - float(len(temp) / (len(movie) + len(our_movie) - len(temp)))
+
+# def genres(movie, our_movie):
+#     # these comments serve to debug code, uncomment them when needed
+#     # print("ULAZIM u genres")
+#     # print("Movie : " + str(movie))
+#     # print("Tip move " + str(type(movie)))
+#     # print("Series " + str(our_movie))
+#     # print("Tip series " + str(type(our_movie)))
+#
+#     movie = set(str(movie).strip().split())
+#     our_movie = set(str(our_movie).strip().split())
+#     temp = our_movie & movie
+#
+#     # print("FILTRIRAO u genres")
+#     # print("Movie : " + str(movie))
+#     # print("Tip move " + str(type(movie)))
+#     # print("Series " + str(our_movie))
+#     # print("Tip series " + str(type(our_movie)))
+#     # print("Intersection : " + str(temp))
+#
+#     # error handling
+#     if len(movie) + len(our_movie) - len(temp) == 0:
+#         return 0
+#     # true result
+#     # number of shared elements / number of total elements
+#     return 1 - float(len(temp) / (len(movie) + len(our_movie) - len(temp)))
 
 
 """
@@ -335,6 +377,7 @@ def total_similarity(series):
     # print(zeroes)
     # print(vector)
     return LA.norm(zeros - vector)
+
 
 # movies.apply(func=similar.print_series,axis=1, args={})
 def print_series(series):
