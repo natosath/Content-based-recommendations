@@ -8,6 +8,7 @@ from code import find_similar
 # minhash genres with binary arrays using manhatan distance
 # TODO GPU computing!!!
 # TODO CuPy
+# TODO actually write down matrix
 # or CUDA, pytorch, rapids ai
 
 
