@@ -46,3 +46,9 @@ final:
     numVotes - number of votes the title has received
     directors (array of nconsts) - director(s) of the given title
     writers (array of nconsts) – writer(s) of the given title
+
+database:
+    add actors to final
+
+matrix:
+    tconst,primaryTitle,startYear,runtimeMinutes,genres,directors,writers,actors,similarity,movie

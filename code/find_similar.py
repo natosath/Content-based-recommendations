@@ -23,10 +23,6 @@ def find_most_similar(film_id, database, how_many):
     # movies = pd.read_csv(str(database))
     input_movie = database.loc[database["tconst"] == INPUT]
     movies = database.loc[database["tconst"] != INPUT]  # remove our selected movie from dataframe
-    movies = movies.drop(labels="originalTitle", axis=1)
-    # movies = movies.sort_values(by=["numVotes"], ascending=False)
-    # movies = movies.head(2000)
-    # remove to reduce clutter, however it is needed for final out put
 
     # -----------filter by isAdult----------------------
     is_adult_start = time.time()
@@ -80,17 +76,18 @@ def find_most_similar(film_id, database, how_many):
     movies = movies.sort_values(by=["similarity"])
     # movies = movies.sort_values(by=["numVotes"], ascending=False)
     movies = movies.head(MOST_SIMILAR)
-    movies = movies[["tconst", "similarity", "primaryTitle"]]
-    # print(movies)
+    return movies
+    # movies = movies[["tconst", "similarity", "primaryTitle"]]
+    # print(movies["primaryTitle"])
     # print(movies.shape)
 
-    """all_movies = pd.read_csv("final.csv")
-    # spajanje najslicnijih i svih filmova
-    merged = pd.merge(movies, all_movies, how="inner", on="tconst")
-    del movies
-    del all_movies
-    # merged.apply(func=similar.print_series, axis=1, args={})
-    print(merged[["primaryTitle", "similarity", "averageRating"]])"""
+    # """all_movies = pd.read_csv("final.csv")
+    # # spajanje najslicnijih i svih filmova
+    # merged = pd.merge(movies, all_movies, how="inner", on="tconst")
+    # del movies
+    # del all_movies
+    # # merged.apply(func=similar.print_series, axis=1, args={})
+    # print(merged[["primaryTitle", "similarity", "averageRating"]])"""
 
     # print("adult %s" % (is_adult_end - is_adult_start))
     # print("directors %s" % (director_end - director_start))
