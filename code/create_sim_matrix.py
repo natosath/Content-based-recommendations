@@ -33,7 +33,7 @@ def write_to_target(target, que, workers):
 if __name__ == '__main__':
     start = time.time()
     workers = cpu_count() - 1
-    HOW_MANY_FILMS = 3
+    FILMS_PER_WORKER = 200
     HOW_MANY_SIMILAR = 40
     processes = []
     to_write = Queue(maxsize=0)
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     destination = 'matrix.csv'
     film_ids = np.array_split(database["tconst"], workers)
     for i in range(workers):
-        p = Process(target=similar_for_id, args=(film_ids[i].head(HOW_MANY_FILMS),
+        p = Process(target=similar_for_id, args=(film_ids[i].head(FILMS_PER_WORKER),
                                                  database,
                                                  HOW_MANY_SIMILAR,
                                                  to_write,))
@@ -67,9 +67,9 @@ if __name__ == '__main__':
 
     duration = time.time() - start
     print("program complete in:", duration, " seconds")
-    print("films done: ", workers * HOW_MANY_FILMS)
+    print("films done: ", workers * FILMS_PER_WORKER)
     print("workers exploited in poor working conditions: ", workers)
-    print("per film: ", duration / (HOW_MANY_FILMS * workers), " seconds (effective)")
+    print("per film: ", duration / (FILMS_PER_WORKER * workers), " seconds (effective)")
 
 # df = pd.read_csv('database.csv')
 # tconst = df["tconst"]
