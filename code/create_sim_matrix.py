@@ -42,7 +42,7 @@ if __name__ == '__main__':
             'directors', 'writers', 'actors']
     database = pd.read_csv("database.csv", usecols=cols)
     # matrix = pd.read_csv('matrix.csv')
-    matrix = 'matrix.csv'
+    destination = 'matrix.csv'
     film_ids = np.array_split(database["tconst"], workers)
     for i in range(workers):
         p = Process(target=similar_for_id, args=(film_ids[i].head(HOW_MANY_FILMS),
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         processes.append(p)
         p.start()
 
-    writer = Process(target=write_to_target, args=(matrix,
+    writer = Process(target=write_to_target, args=(destination,
                                                    to_write,
                                                    workers))
     writer.start()
