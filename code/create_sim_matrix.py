@@ -26,14 +26,14 @@ def write_to_target(target, que, workers):
             foo = que.get()
             if foo is None:
                 workers -= 1
-            else:
+            elif not foo.empty:
                 foo.to_csv(target, index=False, header=False, mode="a")
 
 
 if __name__ == '__main__':
     start = time.time()
     workers = cpu_count() - 1
-    FILMS_PER_WORKER = 200
+    FILMS_PER_WORKER = 3000
     HOW_MANY_SIMILAR = 40
     processes = []
     to_write = Queue(maxsize=0)
@@ -41,6 +41,9 @@ if __name__ == '__main__':
             'startYear', 'runtimeMinutes', 'genres',
             'directors', 'writers', 'actors']
     database = pd.read_csv("database.csv", usecols=cols)
+    test = ['tt0133093', 'tt0110912']
+    # print(database)
+    # film_ids[i].head(FILMS_PER_WORKER)
     # matrix = pd.read_csv('matrix.csv')
     destination = 'matrix.csv'
     film_ids = np.array_split(database["tconst"], workers)
