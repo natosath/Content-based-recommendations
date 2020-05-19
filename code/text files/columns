@@ -52,3 +52,6 @@ database:
 
 matrix:
     tconst,primaryTitle,startYear,runtimeMinutes,genres,directors,writers,actors,similarity,movie
+
+spare:
+    iz matrix izvuci tconst,similarity i movie, tjt
