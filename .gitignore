@@ -1,4 +1,6 @@
 #
 *.tsv
 *.csv
+README.txt
+*.pkl
 
