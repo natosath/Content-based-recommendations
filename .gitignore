@@ -3,4 +3,6 @@
 *.csv
 README.txt
 *.pkl
+*.iml
+*.xml
 
