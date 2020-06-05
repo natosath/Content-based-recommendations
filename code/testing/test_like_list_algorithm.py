@@ -1,53 +1,52 @@
 import numpy as np
 import time
+from scipy.spatial import distance
 
-first = ["lalal", "nm42", "hoho", "nm69", "nyeh"]
-second = ["lalal", "nm42", "nm12", "nm69", "nyeh", "ne"]
-third = ["lalal", "nm42", "hoho", "nm69", "nm99", "nm12", "zen"]
+first = [11011, 696969, 420, 89, 30, 99]
+second = [11011, 696969, 20, 89, 30, 9000]
+third = [11011, 696969, 420, 89, 20, 7]
+np_first = np.array(first)
+np_second = np.array(second)
+np_third = np.array(third)
 
 
 # TODO try turning into numpy arrays
-def similarity_numpy(prvi, drugi):
-    prvi = {item for item in prvi if "nm" in item}
-    drugi = {item for item in drugi if "nm" in item}
-    # prvi = np.array([item for item in prvi if "nm" in item])
-    # drugi = np.array([item for item in drugi if "nm" in item])
-    # prvi = np.array(prvi)
-    # drugi = np.array(drugi)
+def similarity_set(x, y):
+    # prvi = {item for item in x if "nm" in item}
+    # drugi = {item for item in y if "nm" in item}
+    prvi = set(x)
+    drugi = set(y)
     intersect = prvi & drugi
-    print(intersect)
+    # print(intersect)
     rez = float(len(intersect) / (len(prvi) + len(drugi) - len(intersect)))
     return rez
 
 
-def similarity_list(prvi, drugi):
-    prvi = [item for item in prvi if "nm" in item]
-    drugi = [item for item in drugi if "nm" in item]
-    intersect = set(prvi).intersection(drugi)
-    print(intersect)
-    rez = float(len(intersect) / (len(prvi) + len(drugi) - len(intersect)))
-    return rez
+def similarity_numpy(x, y):
+    rez = distance.jaccard(x, y)
+    return 1 - rez
 
 
-# list_start = time.time()
-# for i in range(0, 66000):
-#     similarity_list(first, second)
-#     similarity_list(second, third)
-# list_duration = time.time() - list_start
-# print("list done")
-#
-# numpy_start = time.time()
-# for i in range(0, 66000):
-#     similarity_numpy(third, first)
-#     similarity_numpy(second, third)
-# numpy_duration = time.time() - numpy_start
-# print("numpy done")
-# print("list time:", list_duration)
-# print("numpy time:", numpy_duration)
+numpy_start = time.time()
+for i in range(0, 66000):
+    similarity_numpy(np_first, np_second)
+    similarity_numpy(np_second, np_third)
+numpy_duration = time.time() - numpy_start
+print("numpy done")
 
-print(similarity_list(first, second), similarity_numpy(first, second))
-print(similarity_list(second, second), similarity_numpy(second, second))
-print(similarity_list(third, second), similarity_numpy(third, second))
+list_start = time.time()
+for i in range(0, 66000):
+    similarity_set(third, first)
+    similarity_set(second, third)
+list_duration = time.time() - list_start
+print("set done")
+
+print("numpy time:", numpy_duration)
+print("set time:", list_duration)
+print("comparing returns numpy : set")
+print(similarity_numpy(np_first, np_second), similarity_set(first, second))
+print(similarity_numpy(np_second, np_second), similarity_set(second, second))
+print(similarity_numpy(np_third, np_second), similarity_set(third, second))
 
 # numpy lost!
 # too much overhead in type conversion?
@@ -61,3 +60,7 @@ print(similarity_list(third, second), similarity_numpy(third, second))
 # print("and---")
 # print(first and second)
 # print(second and first)
+
+# first = ["lalal", "nm42", "hoho", "nm69", "nyeh"]
+# second = ["lalal", "nm42", "nm12", "nm69", "nyeh", "ne"]
+# third = ["lalal", "nm42", "hoho", "nm69", "nm99", "nm12", "zen"]

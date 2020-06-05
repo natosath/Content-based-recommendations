@@ -11,14 +11,14 @@ from scipy import stats
 start = time.time()
 CHUNK_SIZE = 300_000
 MOVIE_SAMPLE = 0.2
-USER_SAMPLE = 0.0005 * 3
+USER_SAMPLE = 0.0005 * 2
 SAMPLE = 5
 user_path = '/home/natosath/Desktop/Projekt/code/user/pickle_test.pkl'
 all_movies_path = '/home/natosath/Desktop/Projekt/code/database.csv'
 matrix_path = '/home/natosath/Desktop/Projekt/code/matrix.csv'
 
 all_movies = pd.read_csv(all_movies_path, usecols=["tconst", "genres"])
-sample_movies = all_movies.head(3000)
+sample_movies = all_movies.head(6000)
 # sample_movies = np.array_split(all_movies, 3)[0]
 matrix = pd.read_csv(matrix_path, usecols=["tconst", "similarity", "movie"])
 
@@ -34,13 +34,13 @@ wins = {0: 0, 1: 0}
 
 def compare_recommenders(series, user_data):
     # print(user_data)
-    randoms = sample_movies.sample(n=SAMPLE * 2)
+    popular = sample_movies.head(10)
     similar = get_recommendations(matrix, series)
     if similar.empty:
         print("empty", series.tconst)
         return
     similar = similar.merge(all_movies, how="inner")  # get genres for the movie
-    rez = get_winner(series, randoms, similar, user_data)
+    rez = get_winner(series, popular, similar, user_data)
     # print(similar)
     wins[rez] += 1
 

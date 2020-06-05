@@ -1,6 +1,6 @@
 import pandas as pd
 import time
-from code import similarity_functions as similar
+from code.testing import cosine_sim_functions as similar
 
 """@film is string of our film name,
     later to be refractored to id
@@ -13,6 +13,7 @@ def find_most_similar(film_id, database, how_many):
     start_time = time.time()
 
     # TODO Optimize all of this one day
+    # TODO maybe filter out after genres?
 
     INPUT = str(film_id)
     MOST_SIMILAR = how_many
@@ -54,6 +55,7 @@ def find_most_similar(film_id, database, how_many):
     movies = similar.remove_least_similar(movies, input_movie)
     # TODO take greater care of movies with no candidates
     if movies.empty:
+        print("empty for :", film_id)
         return movies
     filter_end = time.time()
 
@@ -79,7 +81,7 @@ def find_most_similar(film_id, database, how_many):
     math_end = time.time()
 
     # -------------prikazi podatke----------------
-    movies = movies.sort_values(by=["similarity"])
+    movies = movies.sort_values(by=["similarity"], ascending=False)
     # movies = movies.sort_values(by=["numVotes"], ascending=False)
     movies = movies.head(MOST_SIMILAR)
     return movies
