@@ -151,6 +151,7 @@ def genres(movie, our_movie):
     # number of shared elements / number of total elements
     return 1 - float(len(temp) / (len(movie) + len(our_movie) - len(temp)))
 
+
 # def genres(movie, our_movie):
 #     # these comments serve to debug code, uncomment them when needed
 #     # print("ULAZIM u genres")
@@ -355,9 +356,8 @@ def popularity(movie, our_movie):
 #
 """
 
+zeroes = {x: np.zeros(x) for x in range(7)}
 
-# TODO Check other options for computing
-# TODO Add averageRating and numVotes into consideration when calculating
 
 def total_similarity(series):
     vector = np.array([series.genres,
@@ -371,12 +371,11 @@ def total_similarity(series):
     # vector = vector * series.numVotes
 
     vector = vector[~np.isnan(vector)]
-    zeros = np.zeros([len(vector)])
 
     # for debugg
     # print(zeroes)
     # print(vector)
-    return LA.norm(zeros - vector)
+    return LA.norm(zeroes[len(vector)] - vector)
 
 
 # movies.apply(func=similar.print_series,axis=1, args={})
