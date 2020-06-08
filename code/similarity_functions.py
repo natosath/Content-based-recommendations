@@ -247,8 +247,10 @@ def remove_least_similar(movies, series):
     # print(movies.shape)
     # movies = movies.sort_values(by=["directors"], ascending=True)
     # print(movies.directors)
-    movies = movies.loc[((movies["genres"] != 1) | (movies["directors"] != 1) | (movies["writers"] != 1))
-                        & (movies["startYear"] < 0.5)]
+    filtered = movies.loc[((movies["genres"] != 1) | (movies["directors"] != 1) | (movies["writers"] != 1))
+                          & (movies["startYear"] < 0.5)]
+    if not filtered.empty:
+        return filtered
     # print(movies.shape)
     # movies = movies.loc[movies["directors"] != 1]
     return movies

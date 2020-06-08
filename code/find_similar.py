@@ -52,9 +52,6 @@ def find_most_similar(film_id, database, how_many):
     # izbaci one za koji do sada imaju najmanju slicnost
     filter_start = time.time()
     movies = similar.remove_least_similar(movies, input_movie)
-    # TODO take greater care of movies with no candidates
-    if movies.empty:
-        return movies
     filter_end = time.time()
 
     # -------------slicnost trajanja------------------
@@ -69,12 +66,9 @@ def find_most_similar(film_id, database, how_many):
 
     # ------------izracunaj zavrsnu slicnost---------------
     total_start = time.time()
-    # TODO remove try block, error was in empty dataframe afterall
-    try:
-        movies["similarity"] = movies.apply(func=similar.total_similarity, axis=1, args={})
-    except ValueError or KeyError:
-        print(movies)
-        print(input_movie)
+
+    movies["similarity"] = movies.apply(func=similar.total_similarity, axis=1, args={})
+
     total_end = time.time()
     math_end = time.time()
 
