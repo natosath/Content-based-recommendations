@@ -358,7 +358,7 @@ def popularity(movie, our_movie):
 #
 """
 
-zeroes = {x: np.zeros(x) for x in range(7)}
+zeroes = {x: np.zeros(x) for x in range(1, 7)}
 
 
 def total_similarity(series):

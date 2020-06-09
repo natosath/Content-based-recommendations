@@ -76,6 +76,9 @@ def find_most_similar(film_id, database, how_many):
     movies = movies.sort_values(by=["similarity"])
     # movies = movies.sort_values(by=["numVotes"], ascending=False)
     movies = movies.head(MOST_SIMILAR)
+    movies["movies"] = movies["tconst"]
+    movies["tconst"] = INPUT
+    movies = movies[["tconst", "similarity", "movies"]]
     return movies
     # movies = movies[["tconst", "similarity", "primaryTitle"]]
     # print(movies["primaryTitle"])

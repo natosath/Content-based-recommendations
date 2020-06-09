@@ -14,7 +14,7 @@ from code import find_similar
 def similar_for_id(film_ids, database, how_many, que):
     for film in film_ids:
         similars = find_similar.find_most_similar(film, database, how_many)
-        similars["movie"] = film
+        # similars["movie"] = film
         que.put(similars)
     que.put(None)
     # print(similars)
