@@ -13,7 +13,7 @@ provesti testove tako da se odaberu nasumicni useri koji traze
 preporuku za jedan film koji su pogledali
 picklati usera kada necemo vise nailaziti na njegove ratinge
 evaluacija sustava
-    napraviti jednostavni model usera
+    napraviti jednostavni model usera # done
         samo mari za genre
     napraviti jednostavni test
         onaj sa boljim genreom
@@ -26,4 +26,6 @@ evaluacija sustava
     testirati za:
         vs random system
         vs most popular system
+        vs most popular in genres
         vs statistic system
+        vs filmovi koje je vec gledao?

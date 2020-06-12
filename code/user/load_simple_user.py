@@ -17,7 +17,7 @@ NUM_OF_USERS = 15_000
 CHUNK_SIZE = 30_000
 start = time.time()
 path_ratings = '/home/natosath/Desktop/Projekt/movie-lens-csv/sorted_rating_with_imdb_id.csv'
-path_database = '/home/natosath/Desktop/Projekt/code/refactor_database/gen_normed_np-database.csv'
+path_database = '/code/vectorise_database/gen_normed_np-database.csv'
 ratings = pd.read_csv(path_ratings, chunksize=CHUNK_SIZE, low_memory=False, index_col=0)
 database = pd.read_csv(path_database, usecols=["tconst", "genres"],
                        dtype={'tconst': str})

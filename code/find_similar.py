@@ -51,8 +51,12 @@ def find_most_similar(film_id, database, how_many):
 
     # ----------------------------------------------------
     # izbaci one za koji do sada imaju najmanju slicnost
+    # temporary adjusted for creating data for filter graph
     filter_start = time.time()
+    # len_pre_filter = len(movies.index)
     movies = similar.remove_least_similar(movies, input_movie)
+    # len_post_filter = len(movies.index)
+    # print(len_pre_filter, len_post_filter)
     # print("nakon filtracije")
     # print(len(movies.index))
     filter_end = time.time()

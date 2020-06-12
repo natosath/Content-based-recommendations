@@ -1,8 +1,8 @@
 import pickle
 import numpy as np
 import pandas as pd
-from code.recommender_eval.recommendations import *
-from code.recommender_eval.tests_math import *
+from code.recommender_eval.old.recommendations import *
+from code.recommender_eval.old.tests_math import *
 import time
 from scipy import stats
 

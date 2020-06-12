@@ -80,8 +80,3 @@ if __name__ == '__main__':
     print("number of worker processes: ", workers)
     print("per film: ", duration / (FILMS_PER_WORKER * workers), " seconds (effective)")
 
-# df = pd.read_csv('database.csv')
-# tconst = df["tconst"]
-# dfs = np.array_split(tconst, 3)
-# for t in dfs:
-#     print(t.shape)

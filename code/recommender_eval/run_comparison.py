@@ -1,0 +1,1 @@
+from code.recommender_eval import compare_random
