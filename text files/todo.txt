@@ -1,0 +1,29 @@
+izracunati novu sim matrix, ovaj put je tconst zadani film # done
+-----
+spremiti negdje za svaki zadani film u listu najslicnije filmove # done
+django webapp # done
+    napraviti modele # done
+    ucitati u modele # done
+    generirati unique urls # done
+    napraviti view sa query najslicnijih filmova # done
+    impl search # done
+
+
+provesti testove tako da se odaberu nasumicni useri koji traze
+preporuku za jedan film koji su pogledali
+picklati usera kada necemo vise nailaziti na njegove ratinge
+evaluacija sustava
+    napraviti jednostavni model usera
+        samo mari za genre
+    napraviti jednostavni test
+        onaj sa boljim genreom
+    napraviti složeni model usera
+    napraviti slozeni test
+    napraviti statistickog usera - opt
+        random rasporediti usere sa drugacijim biasima
+    napraviti statisticki test  - opt
+        vidjeti kako se njima svida
+    testirati za:
+        vs random system
+        vs most popular system
+        vs statistic system

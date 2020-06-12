@@ -16,6 +16,7 @@ def find_most_similar(film_id, database, how_many):
 
     INPUT = str(film_id)
     MOST_SIMILAR = how_many
+    # print(INPUT)
 
     # print("Our movie is : " + INPUT)
 
@@ -52,6 +53,8 @@ def find_most_similar(film_id, database, how_many):
     # izbaci one za koji do sada imaju najmanju slicnost
     filter_start = time.time()
     movies = similar.remove_least_similar(movies, input_movie)
+    # print("nakon filtracije")
+    # print(len(movies.index))
     filter_end = time.time()
 
     # -------------slicnost trajanja------------------
@@ -76,9 +79,9 @@ def find_most_similar(film_id, database, how_many):
     movies = movies.sort_values(by=["similarity"])
     # movies = movies.sort_values(by=["numVotes"], ascending=False)
     movies = movies.head(MOST_SIMILAR)
-    movies["movies"] = movies["tconst"]
+    movies["movie"] = movies["tconst"]
     movies["tconst"] = INPUT
-    movies = movies[["tconst", "similarity", "movies"]]
+    movies = movies[["tconst", "similarity", "movie"]]
     return movies
     # movies = movies[["tconst", "similarity", "primaryTitle"]]
     # print(movies["primaryTitle"])

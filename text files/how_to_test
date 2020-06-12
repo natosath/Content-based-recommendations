@@ -1,0 +1,14 @@
+user models:
+    simple user : cares about genre and has biases for them
+
+tests:
+    simple genre test : take genres bias and weight it with genre array
+
+
+vs random:
+    take a number of users
+    have them "watch a movie"
+    recommend movies to them
+    compare which system gives them what they want
+    compare weight of genre bias
+    use binomial distribution to prove that system aren't equal

@@ -24,7 +24,7 @@ def analyze_genres(series):
         genres[gen] += 1
 
 
-path = '/home/natosath/Desktop/Projekt/code/database.csv'
+path = '/home/natosath/Desktop/Projekt/code/new_database.csv'
 database = pd.read_csv(path, usecols=['genres', 'primaryTitle'])
 database['genres'] = database.apply(func=to_lower, axis=1, args={})
 database.apply(func=analyze_genres, axis=1, args={})

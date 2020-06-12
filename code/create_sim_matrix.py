@@ -21,36 +21,41 @@ def similar_for_id(film_ids, database, how_many, que):
 
 
 def write_to_target(target, que, workers):
+    first = True
     while (workers > 0):
         if not que.empty():
             foo = que.get()
             if foo is None:
                 workers -= 1
             elif not foo.empty:
-                foo.to_csv(target, index=False, header=False, mode="a")
+                if first:
+                    foo.to_csv(target, index=False, mode="a")
+                    first = False
+                else:
+                    foo.to_csv(target, index=False, header=False, mode="a")
 
 
 if __name__ == '__main__':
     start = time.time()
     workers = cpu_count() - 1
-    FILMS_PER_WORKER = 3000
-    HOW_MANY_SIMILAR = 40
+    FILMS_PER_WORKER = 2500
+    TAKE_TOP_SIMILAR = 20
     processes = []
     to_write = Queue(maxsize=0)
     cols = ['tconst', 'primaryTitle', 'isAdult',
             'startYear', 'runtimeMinutes', 'genres',
             'directors', 'writers', 'actors']
-    database = pd.read_csv("database.csv", usecols=cols)
-    test = ['tt0133093', 'tt0110912']
+    database = pd.read_csv("new_database.csv", usecols=cols)
+    sample = database.head(workers * FILMS_PER_WORKER)  # our dataset for which we will fill matrix
     # print(database)
     # film_ids[i].head(FILMS_PER_WORKER)
     # matrix = pd.read_csv('matrix.csv')
-    destination = 'matrix.csv'
-    film_ids = np.array_split(database["tconst"], workers)
+    destination = 'new_matrix.csv'
+    film_ids = np.array_split(sample["tconst"], workers)
     for i in range(workers):
-        p = Process(target=similar_for_id, args=(film_ids[i].head(FILMS_PER_WORKER),
+        p = Process(target=similar_for_id, args=(film_ids[i],
                                                  database,
-                                                 HOW_MANY_SIMILAR,
+                                                 TAKE_TOP_SIMILAR,
                                                  to_write,))
         processes.append(p)
         p.start()
@@ -70,8 +75,9 @@ if __name__ == '__main__':
 
     duration = time.time() - start
     print("program complete in:", duration, " seconds")
+    print("program complete in:", duration / 60, " minutes")
     print("films done: ", workers * FILMS_PER_WORKER)
-    print("workers exploited in poor working conditions: ", workers)
+    print("number of worker processes: ", workers)
     print("per film: ", duration / (FILMS_PER_WORKER * workers), " seconds (effective)")
 
 # df = pd.read_csv('database.csv')

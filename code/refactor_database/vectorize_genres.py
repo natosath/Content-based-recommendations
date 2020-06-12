@@ -4,7 +4,7 @@ import pickle
 import time
 
 start = time.time()
-path = '../database.csv'
+path = '../new_database.csv'
 database = pd.read_csv(path)
 database = database.drop(columns=["Unnamed: 0"], axis=1)
 database.info(verbose=True)
