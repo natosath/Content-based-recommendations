@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from collections import Counter
 
 # pseudo of each function
 # def x_recommender(user, movie, database, matrix)
@@ -8,16 +9,28 @@ import numpy as np
 # return avg value or something
 
 MAX_NUM_GENRES = 3
+NUM_FILMS = 20
 
 
 def random_recommender(user, movie, database, matrix):
-    recommended = database.sample(n=10)
+    recommended = database.sample(n=NUM_FILMS)
     return recommended
+
+
+def stat_recommender(users, movie, database):
+    counter = Counter()
+    tconst = str(movie.tconst.values[0])
+    filtered = [user for user in users if 'tt0111161' in user.watched]
+    for user in filtered:
+        counter.update(user.watched)
+    common = counter.most_common(20 + 1)
+    common = [x[0] for x in common[1:]]
+    recommended = database[database.tconst.isin(common)]
 
 
 # columns left are similarity, tconst, genres
 def my_recommender(user, movie, database, matrix):
-    recommended = matrix.loc[matrix["tconst"] == str(movie.tconst.values[0])].head(10)
+    recommended = matrix.loc[matrix["tconst"] == str(movie.tconst.values[0])].head(NUM_FILMS)
     recommended = recommended.drop(columns="tconst")
     recommended = pd.merge(recommended, database,
                            left_on=["movie"],

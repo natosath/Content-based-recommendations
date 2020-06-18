@@ -29,3 +29,4 @@ evaluacija sustava
         vs most popular in genres
         vs statistic system
         vs filmovi koje je vec gledao?
+        euclid vs cosine
