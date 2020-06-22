@@ -8,10 +8,8 @@ from pandas.core.common import SettingWithCopyWarning
 
 from code.recommender_eval import recommenders
 import random
-from scipy import stats
 import warnings
-
-start = time.time()
+from scipy import stats
 
 
 def convert_to_numpy(series):
@@ -23,28 +21,28 @@ def convert_to_numpy(series):
 
 
 def compare(SAMPLE, USERS, n, database, matrix):
+    start = time.time()
+    warnings.filterwarnings("ignore", category=SettingWithCopyWarning)
     # SAMPLE = 7500
     # USERS = '../user/simple_users.pkl'
     # database = pd.read_csv('../vectorise_database/gen_normed_np-database.csv', usecols=["tconst", "genres"])
     # matrix = pd.read_csv('../new_matrix.csv')
     # sample = list(database.tconst.values)[0:SAMPLE]  # list of movie ids
 
-    warnings.filterwarnings("ignore", category=SettingWithCopyWarning)
     count = 0
     users = []
+    all_users = []
+    empty = 0
 
     file = open(USERS, mode="rb")
     while 1:
         try:
             user = pickle.load(file)
-            if random.randint(0, 5) == 0:
-                users.append(user)
-                count += 1
+            all_users.append(user)
         except EOFError:
             break
-        if count >= n:
-            break
     file.close()
+    users = random.sample(all_users, k=n)
 
     # fit = []
     better_avg = {"win": 0, "total": 0}
@@ -53,45 +51,43 @@ def compare(SAMPLE, USERS, n, database, matrix):
     sample = database.head(SAMPLE)
     for user in users:
         # comparing with random recommender
-
-        # movie = sample.head(SAMPLE).sample(n=1)
-
-        movie = random.sample(user.watched, k=1)[0]
-        movie = sample.loc[sample["tconst"] == str(movie)]
+        # movie = random.choice(sample)
+        # movie = database.head(SAMPLE).sample(n=1)
+        movie = sample.head(SAMPLE).sample(n=1)
         # print(movie)
-        if movie.empty:
-            continue
 
         my_recommended = recommenders.my_recommender(user, movie, database, matrix)
-        random_recommended = recommenders.random_recommender(user, movie, database, matrix)
+        stat_recommended = recommenders.stat_recommender(all_users, movie, database)
+        if stat_recommended.empty:
+            empty += 1
+            continue
         # print(my_recommended, random_recommended)
 
         # print(my_recommended)
         my_recommended.loc[:, "genres"] = my_recommended.genres.apply(func=convert_to_numpy)
-        random_recommended.loc[:, "genres"] = random_recommended.genres.apply(func=convert_to_numpy)
+        stat_recommended.loc[:, "genres"] = stat_recommended.genres.apply(func=convert_to_numpy)
         movie.loc[:, "genres"] = movie.genres.apply(func=convert_to_numpy)
 
-        # print(my_recommended.genres)
-        # print(user.get_genre_bias())
+        # print(my_recommended)
         my_recommended = recommenders.add_eval_columns(user, movie, my_recommended)
-        # print(my_recommended.genres)
-        random_recommended = recommenders.add_eval_columns(user, movie, random_recommended)
+        stat_recommended = recommenders.add_eval_columns(user, movie, stat_recommended)
+        # print(stat_recommended)
 
         # print(my_recommended["sim"])
         # print(random_recommended["sim"])
 
-        if my_recommended["avg"].mean() > random_recommended["avg"].mean():
-            better_avg["win"] += 1
-
-        if my_recommended["avg"].max() > random_recommended["avg"].max():
-            better_max["win"] += 1
-
-        if my_recommended["sim"].mean() > random_recommended["sim"].mean():
-            better_sim["win"] += 1
-
-        better_avg["total"] += 1
-        better_max["total"] += 1
-        better_sim["total"] += 1
+        # if my_recommended["avg"].mean() > random_recommended["avg"].mean():
+        #     better_avg["win"] += 1
+        #
+        # if my_recommended["avg"].max() > random_recommended["avg"].max():
+        #     better_max["win"] += 1
+        #
+        # if my_recommended["sim"].mean() > random_recommended["sim"].mean():
+        #     better_sim["win"] += 1
+        #
+        # better_avg["total"] += 1
+        # better_max["total"] += 1
+        # better_sim["total"] += 1
 
     # print(better_avg["win"] / better_avg["total"])
     # print("p for avg: ", stats.binom_test(better_avg["win"], better_avg["total"], p=0.5))
@@ -99,13 +95,14 @@ def compare(SAMPLE, USERS, n, database, matrix):
     # print("p for max: ", stats.binom_test(better_max["win"], better_max["total"], p=0.5))
     # print(better_sim["win"] / better_sim["total"])
     # print("p for sim: ", stats.binom_test(better_sim["win"], better_sim["total"], p=0.5))
-    # print("duration ", time.time() - start, " seconds")
+    print("no stat recommendations in ", empty, " cases")
+    print("duration ", time.time() - start, " seconds")
 
     # analysis output
 
-    print(better_avg["win"] / better_avg["total"], end=" ")
-    print(stats.binom_test(better_avg["win"], better_avg["total"], p=0.5), end=" ")
-    print(better_max["win"] / better_max["total"], end=" ")
-    print(stats.binom_test(better_max["win"], better_max["total"], p=0.5), end=" ")
-    print(better_sim["win"] / better_sim["total"], end=" ")
-    print(stats.binom_test(better_sim["win"], better_sim["total"], p=0.5))
+    # print(better_avg["win"] / better_avg["total"], end=" ")
+    # print(stats.binom_test(better_avg["win"], better_avg["total"], p=0.5), end=" ")
+    # print(better_max["win"] / better_max["total"], end=" ")
+    # print(stats.binom_test(better_max["win"], better_max["total"], p=0.5), end=" ")
+    # print(better_sim["win"] / better_sim["total"], end=" ")
+    # print(stats.binom_test(better_sim["win"], better_sim["total"], p=0.5))

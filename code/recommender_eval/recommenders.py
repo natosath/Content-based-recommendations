@@ -20,12 +20,13 @@ def random_recommender(user, movie, database, matrix):
 def stat_recommender(users, movie, database):
     counter = Counter()
     tconst = str(movie.tconst.values[0])
-    filtered = [user for user in users if 'tt0111161' in user.watched]
+    filtered = [user for user in users if tconst in user.watched]
     for user in filtered:
         counter.update(user.watched)
     common = counter.most_common(20 + 1)
     common = [x[0] for x in common[1:]]
     recommended = database[database.tconst.isin(common)]
+    return recommended
 
 
 # columns left are similarity, tconst, genres
@@ -57,7 +58,7 @@ def add_eval_columns(user, movie, recommended):
         return len(result[result != 0]) / len(genres[genres != 0])
 
     bias = user.get_genre_bias()
-    recommended["avg"] = recommended.genres.apply(func=elementwise_avg, args={})
-    recommended["sim"] = recommended.genres.apply(func=genre_similarity, args={})
+    recommended.loc[:, "avg"] = recommended.genres.apply(func=elementwise_avg, args={})
+    recommended.loc[:, "sim"] = recommended.genres.apply(func=genre_similarity, args={})
 
     return recommended

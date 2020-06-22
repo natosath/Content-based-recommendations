@@ -9,9 +9,10 @@ django webapp # done
     impl search # done
 
 
+redo simple user, spremi njihove ratinge za filmove
+
 provesti testove tako da se odaberu nasumicni useri koji traze
 preporuku za jedan film koji su pogledali
-picklati usera kada necemo vise nailaziti na njegove ratinge
 evaluacija sustava
     napraviti jednostavni model usera # done
         samo mari za genre
@@ -23,10 +24,12 @@ evaluacija sustava
         random rasporediti usere sa drugacijim biasima
     napraviti statisticki test  - opt
         vidjeti kako se njima svida
-    testirati za:
+    testirati za pojedini film i usera:
         vs random system
         vs most popular system
         vs most popular in genres
         vs statistic system
         vs filmovi koje je vec gledao?
         euclid vs cosine
+    testirati 2.0 na bazi nekih filmova preporuci korisniku filmove
+        - za te filmove izvedi RMSE

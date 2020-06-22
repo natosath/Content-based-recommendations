@@ -3,9 +3,13 @@ import numpy as np
 import multiprocessing as mp
 import pickle
 import time
+
+from pandas.core.common import SettingWithCopyWarning
+
 from code.recommender_eval import recommenders
 import random
 from scipy import stats
+import warnings
 
 start = time.time()
 
@@ -28,12 +32,8 @@ def convert_to_numpy(series):
     return np.array(array)
 
 
-def compare(SAMPLE, USERS, n, database, matrix,):
-    # SAMPLE = 7500
-    # USERS = '../user/simple_users.pkl'
-    # database = pd.read_csv('../vectorise_database/gen_normed_np-database.csv', usecols=["tconst", "genres"])
-    # matrix = pd.read_csv('../new_matrix.csv')
-    # sample = list(database.tconst.values)[0:SAMPLE]  # list of movie ids
+def compare(SAMPLE, USERS, n, database, matrix, ):
+    warnings.filterwarnings("ignore", category=SettingWithCopyWarning)
 
     count = 0
     users = []
@@ -57,7 +57,8 @@ def compare(SAMPLE, USERS, n, database, matrix,):
     better_sim = {"win": 0, "total": 0}
     popular_recommendation = database.head(20)
     # print(popular_recommendation)
-    popular_recommendation["genres"] = popular_recommendation.genres.apply(func=convert_to_numpy)
+    # popular_recommendation["genres"] = popular_recommendation.genres.apply(func=convert_to_numpy)
+    popular_recommendation.loc[:, "genres"] = popular_recommendation.genres.apply(func=convert_to_numpy)
 
     for user in users:
         # comparing with random recommender
@@ -70,10 +71,10 @@ def compare(SAMPLE, USERS, n, database, matrix,):
 
         # print(my_recommended)
         # convert genre column from str to numpy array
-        my_recommended["genres"] = my_recommended.genres.apply(func=convert_to_numpy)
-        movie["genres"] = movie.genres.apply(func=convert_to_numpy)
+        my_recommended.loc[:, "genres"] = my_recommended.genres.apply(func=convert_to_numpy)
+        movie.loc[:, "genres"] = movie.genres.apply(func=convert_to_numpy)
 
-        # print(my_recommended)
+        # print(my_recommended
         my_recommended = recommenders.add_eval_columns(user, movie, my_recommended)
         popular_recommendation = recommenders.add_eval_columns(user, movie, popular_recommendation)
 
@@ -106,5 +107,3 @@ def compare(SAMPLE, USERS, n, database, matrix,):
     print(stats.binom_test(better_max["win"], better_max["total"], p=0.5), end=" ")
     print(better_sim["win"] / better_sim["total"], end=" ")
     print(stats.binom_test(better_sim["win"], better_sim["total"], p=0.5))
-
-

@@ -8,14 +8,15 @@ class SimpleUser:
         self.user_id = user_id
         # genre : [rating sum, num of ratings]
         self.genres = {'sum': np.zeros(NUM_GENRES), 'watched': np.zeros(NUM_GENRES)}
-        # tconst values
-        self.watched = set()
+        # redefine to dict with movie : rating pairs
+        self.watched = dict()
 
     # assumes vectorised genres
     def update(self, series):
         self.genres["sum"] += (series.genres * series.rating * 2)
         self.genres["watched"] += series.genres
-        self.watched.add(str(series.tconst))
+        # self.watched.add(str(series.tconst))
+        self.watched[str(series.tconst)] = float(series.rating) * 2
 
     def get_genre_bias(self):
         if self.genres["sum"] is None:
