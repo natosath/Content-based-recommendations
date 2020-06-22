@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from code.user.simple_user import SimpleUser
+from code.user.simple_user import TestSimpleUser
 import time
 import pickle
 
@@ -14,7 +14,7 @@ def convert_to_numpy(series):
     return np.array(array)
 
 
-NUM_OF_USERS = 30_000
+NUM_OF_USERS = 18_000
 CHUNK_SIZE = 30_000
 start = time.time()
 path_ratings = '/home/natosath/Desktop/Projekt/movie-lens-csv/sorted_rating_with_imdb_id.csv'
@@ -34,7 +34,7 @@ def load_user(series):
     if max(series.genres) > 1:
         return
     if series.userId not in users.keys():
-        users[series.userId] = SimpleUser(int(series.userId))
+        users[series.userId] = TestSimpleUser(int(series.userId))
     users[series.userId].update(series)
     # if max(series.genres) > 1:
     #     print(series.tconst)
@@ -48,7 +48,7 @@ def filter_and_pickle(obj, maximum, file):
     return {key: user for key, user in obj.items() if key >= maximum}
 
 
-f = open('newer_simple_users.pkl', mode="wb")
+f = open('test_simple_users.pkl', mode="wb")
 
 max_id = -1
 counter = 0
