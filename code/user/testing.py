@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import math
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+import random
 from collections import Counter
 from code.user.simple_user import SimpleUser
 
@@ -21,3 +24,4 @@ print(vector.sum())
 
 # print(np.average(vector))
 # print(np.average(vector[vector != 0]))
+

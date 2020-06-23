@@ -33,3 +33,12 @@ evaluacija sustava
         euclid vs cosine
     testirati 2.0 na bazi nekih filmova preporuci korisniku filmove
         - za te filmove izvedi RMSE
+
+
+kako predvidjeti rating? ako je neki od preporucenih filmova medu
+gledanima uzmi taj rating, inace koristi prosjecni rating svih usera
+pri usporedbi sustava uzmi 10 najboljih od svakog
+
+
+1 - sim = rez
+sim = - (rez - 1)

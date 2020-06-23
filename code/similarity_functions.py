@@ -380,6 +380,25 @@ def total_similarity(series):
     return LA.norm(zeroes[len(vector)] - vector)
 
 
+unit_vector = {x: np.ones(x) for x in range(1, 7)}
+
+
+def cosine_similarity(series):
+    vector = np.array([series.genres,
+                       series.runtimeMinutes,
+                       series.directors,
+                       series.writers,
+                       series.startYear,
+                       series.actors])
+    vector = vector[~np.isnan(vector)]
+    # convert for cosine similarity
+    vector = -1 * (vector - 1)
+    unit = unit_vector[len(vector)]
+    if LA.norm(unit) == 0 or LA.norm(vector) == 0:
+        return 0
+    return np.dot(unit, vector) / (LA.norm(unit) * LA.norm(vector))
+
+
 # movies.apply(func=similar.print_series,axis=1, args={})
 def print_series(series):
     print(series)

@@ -65,13 +65,14 @@ class TestSimpleUser:
     def update(self, series):
         # self.watched.add(str(series.tconst))
         # 70% of data goes to creating genre bias
-        if random.randint(0, 9) < 7:
+        if random.randint(0, 9) < 8:
+            self.train[str(series.tconst)] = float(series.rating) * 2
             self.genres["sum"] += (series.genres * series.rating * 2)
             self.genres["watched"] += series.genres
-            self.train[str(series.tconst)] = float(series.rating) * 2
+
         else:
             # 30% of data goes to testing it
-            self.train[str(series.tconst)] = float(series.rating) * 2
+            self.test[str(series.tconst)] = float(series.rating) * 2
 
     def get_genre_bias(self):
         if self.genres["sum"] is None:
