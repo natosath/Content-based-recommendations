@@ -32,7 +32,7 @@ def elementwise_avg(series):
     #         diff = abs(value - avg)
     # return rez
 
-    return statistics.mean(result)
+    return statistics.mean(result) - 0.1
     # return statistics.mean([avg, max(result)])
     # return statistics.mean([avg, statistics.median(result)])
     # return statistics.mean([avg, np.average(result)])
@@ -104,12 +104,12 @@ for i in range(100):
         # watched["genres"] = watched["genres"] * user.get_genre_bias()
         # x.apply(lambda x: x * y)
         bias = user.get_genre_bias()
-        avg = statistics.mean(user.train.values())
+        avg = statistics.mean(user.train.equals())
         # watched["genres"] = df.genres.apply(lambda x: x * bias)
         watched.loc[:, "avg"] = watched.genres.apply(func=elementwise_avg, args={})
         # print(watched[["rating", "avg"]])
-        test.extend(list(watched.rating.values))
-        predict.extend(list(watched.avg.values))
+        test.extend(list(watched.rating.equals))
+        predict.extend(list(watched.avg.equals))
         # rms = np.sqrt(mean_squared_error(list(watched.rating.values),
         #                                  list(watched.avg.values)))
         # print(rms)

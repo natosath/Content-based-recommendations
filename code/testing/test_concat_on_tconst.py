@@ -5,7 +5,7 @@ import pandas as pd
 def get_movies(series):
     global matrix
     filtered = matrix.loc[matrix.tconst == series.tconst]
-    movies = list(filtered["movie"].values)
+    movies = list(filtered["movie"].equals)
     return movies
 
 

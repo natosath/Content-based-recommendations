@@ -1,9 +1,11 @@
+# oboje koriste my recommender samo je razlika u matrici
 import pandas as pd
 import numpy as np
 import multiprocessing as mp
 import pickle
 import time
-
+import math
+import statistics
 from pandas.core.common import SettingWithCopyWarning
 
 from code.recommender_eval import recommenders
@@ -11,30 +13,31 @@ import random
 from scipy import stats
 import warnings
 
-start = time.time()
+PATH_POPULAR = 'popular_results.txt'
 
 
-# def convert_to_numpy(series):
-#     array = str(series[1:-1]).strip().replace(",", "").split(" ")
-#     array = [float(x) for x in array]
-#     return np.array(array)
+def jaccard(first, second):
+    inter = set(first).intersection(second)
+    return len(inter) / (len(set(first).union(second)))
 
 
 def convert_to_numpy(series):
     if type(series) is np.ndarray:
         return series
     array = str(series[1:-1]).strip().replace(",", "").split(" ")
-    if "[" in array:
-        print("HERERE", array)
-    # print(array)
     array = [float(x) for x in array]
-    # print(array)
     return np.array(array)
 
 
-def compare(SAMPLE, USERS, n, database, matrix, ):
-    warnings.filterwarnings("ignore", category=SettingWithCopyWarning)
+def compare(SAMPLE, USERS, n, database, matrix):
+    start = time.time()
+    # SAMPLE = 7500
+    # USERS = '../user/simple_users.pkl'
+    # database = pd.read_csv('../vectorise_database/gen_normed_np-database.csv', usecols=["tconst", "genres"])
+    # matrix = pd.read_csv('../new_matrix.csv')
+    # sample = list(database.tconst.values)[0:SAMPLE]  # list of movie ids
 
+    warnings.filterwarnings("ignore", category=SettingWithCopyWarning)
     count = 0
     users = []
 
@@ -51,59 +54,69 @@ def compare(SAMPLE, USERS, n, database, matrix, ):
             break
     file.close()
 
+    file = open(PATH_POPULAR, mode="a")
     # fit = []
-    better_avg = {"win": 0, "total": 0}
-    better_max = {"win": 0, "total": 0}
-    better_sim = {"win": 0, "total": 0}
-    popular_recommendation = database.head(20)
-    # print(popular_recommendation)
-    # popular_recommendation["genres"] = popular_recommendation.genres.apply(func=convert_to_numpy)
-    popular_recommendation.loc[:, "genres"] = popular_recommendation.genres.apply(func=convert_to_numpy)
-
+    equal = []
+    sample = database.head(SAMPLE)
+    eu_values = []
+    cos_values = []
+    wins = {"my": 0, "total": 0}
+    popular_system = database.head(20)
+    popular_system.loc[:, "genres"] = popular_system.genres.apply(func=convert_to_numpy)
     for user in users:
-        # comparing with random recommender
-        # movie = random.choice(sample)
-        movie = database.head(7500).sample(n=1)
+        win = 0
+        # movie = sample.head(SAMPLE).sample(n=1)
+        movie = random.sample(user.watched, k=1)[0]
+        movie = sample.loc[sample["tconst"] == str(movie)]
         # print(movie)
-
-        my_recommended = recommenders.my_recommender(user, movie, database, matrix)
-        # print(my_recommended, random_recommended)
-
-        # print(my_recommended)
-        # convert genre column from str to numpy array
-        my_recommended.loc[:, "genres"] = my_recommended.genres.apply(func=convert_to_numpy)
+        if movie.empty:
+            continue
+        my_system = recommenders.my_recommender(user, movie, database, matrix)
+        # print(my_system, popular_system)
+        my_system.loc[:, "genres"] = my_system.genres.apply(func=convert_to_numpy)
         movie.loc[:, "genres"] = movie.genres.apply(func=convert_to_numpy)
 
-        # print(my_recommended
-        my_recommended = recommenders.add_eval_columns(user, movie, my_recommended)
-        popular_recommendation = recommenders.add_eval_columns(user, movie, popular_recommendation)
+        my_system = recommenders.add_eval_columns(user, movie, my_system)
+        popular_system = recommenders.add_eval_columns(user, movie, popular_system)
 
-        if my_recommended["avg"].mean() > popular_recommendation["avg"].mean():
-            better_avg["win"] += 1
+        HEAD = min(len(my_system.index), len(popular_system.index))
 
-        if my_recommended["avg"].max() > popular_recommendation["avg"].max():
-            better_max["win"] += 1
+        my_system = my_system.sort_values(by="rating", ascending=False).head(HEAD)
+        popular_system = popular_system.sort_values(by="rating", ascending=False).head(HEAD)
 
-        if my_recommended["sim"].mean() > popular_recommendation["sim"].mean():
-            better_sim["win"] += 1
+        x = np.array(list(my_system.rating.values)[0:12])
+        y = np.array(list(popular_system.rating.values)[0:12])
+        eu_values.extend(list(my_system.rating.values))
+        cos_values.extend(list(popular_system.rating.values))
 
-        better_avg["total"] += 1
-        better_max["total"] += 1
-        better_sim["total"] += 1
+        # sim = jaccard(list(my_system.tconst.values),
+        #               list(popular_system.tconst.values))
+        # print(sim)
 
-    # print(better_avg["win"] / better_avg["total"])
-    # print("p for avg: ", stats.binom_test(better_avg["win"], better_avg["total"], p=0.5))
-    # print(better_max["win"] / better_max["total"])
-    # print("p for max: ", stats.binom_test(better_max["win"], better_max["total"], p=0.5))
-    # print(better_sim["win"] / better_sim["total"])
-    # print("p for sim: ", stats.binom_test(better_sim["win"], better_sim["total"], p=0.5))
-    # print("duration ", time.time() - start, " seconds")
+        stat, p = stats.ttest_rel(x, y)
+        if math.isnan(p):
+            p = 1
+        wilcoxon, w_p_g = stats.wilcoxon(x, y, alternative="greater")
+        wilcoxon2, w_p = stats.wilcoxon(x, y)
+        # tuple p student, p wilcox, p wilcox greater, equal
 
-    # analysis output
+        if my_system["rating"].mean() > popular_system["rating"].mean():
+            win = 1
+            wins["my"] += 1
+        if my_system["rating"].mean() != popular_system["rating"].mean():
+            wins["total"] += 1
 
-    print(better_avg["win"] / better_avg["total"], end=" ")
-    print(stats.binom_test(better_avg["win"], better_avg["total"], p=0.5), end=" ")
-    print(better_max["win"] / better_max["total"], end=" ")
-    print(stats.binom_test(better_max["win"], better_max["total"], p=0.5), end=" ")
-    print(better_sim["win"] / better_sim["total"], end=" ")
-    print(stats.binom_test(better_sim["win"], better_sim["total"], p=0.5))
+        file.write(str(p) + " " + str(w_p) + " " + str(w_p_g) + " " + str(win) + "\n")
+
+        # print(my_system.rating)
+        # print(popular_system.rating)
+        # print("----")
+
+    # analysis output and file write here
+    file.close()
+    print(stats.ttest_rel(eu_values, cos_values))
+    print(stats.wilcoxon(eu_values, cos_values))
+    print(stats.wilcoxon(eu_values, cos_values, alternative="greater"))
+    print(stats.binom_test(wins["my"], wins["total"], p=0.5))
+    print("wins", wins["my"] / wins["total"])
+    print(time.time() - start, " seconds")

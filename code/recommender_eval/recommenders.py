@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from collections import Counter
+import statistics
 
 # pseudo of each function
 # def x_recommender(user, movie, database, matrix)
@@ -47,9 +48,8 @@ def add_eval_columns(user, movie, recommended):
         result = np.multiply(series, bias)
         if np.count_nonzero(result) == 0:
             return 0
-        # result = np.average(result[result != 0]) / (MAX_NUM_GENRES)
-        result = np.average(result[result != 0]) / len(result[result != 0])
-        return result
+        result = result[result != 0]
+        return statistics.mean(result)
 
     # closer to 1 is better
     def genre_similarity(series):
@@ -58,7 +58,7 @@ def add_eval_columns(user, movie, recommended):
         return len(result[result != 0]) / len(genres[genres != 0])
 
     bias = user.get_genre_bias()
-    recommended.loc[:, "avg"] = recommended.genres.apply(func=elementwise_avg, args={})
+    recommended.loc[:, "rating"] = recommended.genres.apply(func=elementwise_avg, args={})
     recommended.loc[:, "sim"] = recommended.genres.apply(func=genre_similarity, args={})
 
     return recommended

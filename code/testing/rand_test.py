@@ -8,7 +8,7 @@ def sims(series):
 # shawshank tt0111161
 
 database = pd.read_csv('../database.csv')
-cell = database["tconst"].values.tolist()
+cell = database["tconst"].equals.tolist()
 database["test"] = database.apply(func=sims, axis=1, args={})
 new = pd.DataFrame()
 new["tconst"] = database["tconst"]

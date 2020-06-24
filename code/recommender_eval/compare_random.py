@@ -1,9 +1,11 @@
+# oboje koriste my recommender samo je razlika u matrici
 import pandas as pd
 import numpy as np
 import multiprocessing as mp
 import pickle
 import time
-
+import math
+import statistics
 from pandas.core.common import SettingWithCopyWarning
 
 from code.recommender_eval import recommenders
@@ -11,7 +13,12 @@ import random
 from scipy import stats
 import warnings
 
-start = time.time()
+PATH_RANDOM = 'random_results.txt'
+
+
+def jaccard(first, second):
+    inter = set(first).intersection(second)
+    return len(inter) / (len(set(first).union(second)))
 
 
 def convert_to_numpy(series):
@@ -23,6 +30,7 @@ def convert_to_numpy(series):
 
 
 def compare(SAMPLE, USERS, n, database, matrix):
+    start = time.time()
     # SAMPLE = 7500
     # USERS = '../user/simple_users.pkl'
     # database = pd.read_csv('../vectorise_database/gen_normed_np-database.csv', usecols=["tconst", "genres"])
@@ -46,66 +54,71 @@ def compare(SAMPLE, USERS, n, database, matrix):
             break
     file.close()
 
+    file = open(PATH_RANDOM, mode="a")
     # fit = []
-    better_avg = {"win": 0, "total": 0}
-    better_max = {"win": 0, "total": 0}
-    better_sim = {"win": 0, "total": 0}
+    equal = []
     sample = database.head(SAMPLE)
+    eu_values = []
+    cos_values = []
+    wins = {"my": 0, "total": 0}
     for user in users:
-        # comparing with random recommender
-
+        win = 0
         # movie = sample.head(SAMPLE).sample(n=1)
-
         movie = random.sample(user.watched, k=1)[0]
         movie = sample.loc[sample["tconst"] == str(movie)]
         # print(movie)
         if movie.empty:
             continue
+        my_system = recommenders.my_recommender(user, movie, database, matrix)
+        random_system = recommenders.random_recommender(user, movie, database, matrix)
+        # print(my_system, random_system)
 
-        my_recommended = recommenders.my_recommender(user, movie, database, matrix)
-        random_recommended = recommenders.random_recommender(user, movie, database, matrix)
-        # print(my_recommended, random_recommended)
-
-        # print(my_recommended)
-        my_recommended.loc[:, "genres"] = my_recommended.genres.apply(func=convert_to_numpy)
-        random_recommended.loc[:, "genres"] = random_recommended.genres.apply(func=convert_to_numpy)
+        # print(my_system)
+        my_system.loc[:, "genres"] = my_system.genres.apply(func=convert_to_numpy)
+        random_system.loc[:, "genres"] = random_system.genres.apply(func=convert_to_numpy)
         movie.loc[:, "genres"] = movie.genres.apply(func=convert_to_numpy)
 
-        # print(my_recommended.genres)
-        # print(user.get_genre_bias())
-        my_recommended = recommenders.add_eval_columns(user, movie, my_recommended)
-        # print(my_recommended.genres)
-        random_recommended = recommenders.add_eval_columns(user, movie, random_recommended)
+        my_system = recommenders.add_eval_columns(user, movie, my_system)
+        random_system = recommenders.add_eval_columns(user, movie, random_system)
 
-        # print(my_recommended["sim"])
-        # print(random_recommended["sim"])
+        HEAD = min(len(my_system.index), len(random_system.index))
 
-        if my_recommended["avg"].mean() > random_recommended["avg"].mean():
-            better_avg["win"] += 1
+        my_system = my_system.sort_values(by="rating", ascending=False).head(HEAD)
+        random_system = random_system.sort_values(by="rating", ascending=False).head(HEAD)
 
-        if my_recommended["avg"].max() > random_recommended["avg"].max():
-            better_max["win"] += 1
+        x = np.array(list(my_system.rating.values))
+        y = np.array(list(random_system.rating.values))
+        eu_values.extend(list(my_system.rating.values))
+        cos_values.extend(list(random_system.rating.values))
 
-        if my_recommended["sim"].mean() > random_recommended["sim"].mean():
-            better_sim["win"] += 1
+        # sim = jaccard(list(my_system.tconst.values),
+        #               list(random_system.tconst.values))
+        # print(sim)
 
-        better_avg["total"] += 1
-        better_max["total"] += 1
-        better_sim["total"] += 1
+        stat, p = stats.ttest_rel(x, y)
+        if math.isnan(p):
+            p = 1
+        wilcoxon, w_p_g = stats.wilcoxon(x, y, alternative="greater")
+        wilcoxon2, w_p = stats.wilcoxon(x, y)
+        # tuple p student, p wilcox, p wilcox greater, equal
 
-    # print(better_avg["win"] / better_avg["total"])
-    # print("p for avg: ", stats.binom_test(better_avg["win"], better_avg["total"], p=0.5))
-    # print(better_max["win"] / better_max["total"])
-    # print("p for max: ", stats.binom_test(better_max["win"], better_max["total"], p=0.5))
-    # print(better_sim["win"] / better_sim["total"])
-    # print("p for sim: ", stats.binom_test(better_sim["win"], better_sim["total"], p=0.5))
-    # print("duration ", time.time() - start, " seconds")
+        if my_system["rating"].mean() > random_system["rating"].mean():
+            win = 1
+            wins["my"] += 1
+        if my_system["rating"].mean() != random_system["rating"].mean():
+            wins["total"] += 1
 
-    # analysis output
+        file.write(str(p) + " " + str(w_p) + " " + str(w_p_g) + " " + str(win) + "\n")
 
-    print(better_avg["win"] / better_avg["total"], end=" ")
-    print(stats.binom_test(better_avg["win"], better_avg["total"], p=0.5), end=" ")
-    print(better_max["win"] / better_max["total"], end=" ")
-    print(stats.binom_test(better_max["win"], better_max["total"], p=0.5), end=" ")
-    print(better_sim["win"] / better_sim["total"], end=" ")
-    print(stats.binom_test(better_sim["win"], better_sim["total"], p=0.5))
+        # print(my_system.rating)
+        # print(random_system.rating)
+        # print("----")
+
+    # analysis output and file write here
+    file.close()
+    print(stats.ttest_rel(eu_values, cos_values))
+    print(stats.wilcoxon(eu_values, cos_values))
+    print(stats.wilcoxon(eu_values, cos_values, alternative="greater"))
+    print(stats.binom_test(wins["my"], wins["total"], p=0.5))
+    print("wins", wins["my"] / wins["total"])
+    print(time.time() - start, " seconds")

@@ -44,6 +44,6 @@ print(common)
 
 # df[df.countries.isin(countries)]
 df = df[df.tconst.isin(common)]
-print(df.primaryTitle.values.tolist())
+print(df.primaryTitle.equals.tolist())
 
 print("program end in ", time.time() - start)
